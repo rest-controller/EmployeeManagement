@@ -9,6 +9,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 @Service
 public class EmployeeService {
@@ -40,8 +42,13 @@ public class EmployeeService {
 
     public ResponseEntity<Employee> addEmployee(Employee employee) {
         try {
-            employeeRepository.save(employee);
-            return new ResponseEntity<>(employee, HttpStatus.CREATED);
+            if(isValidEmail(employee.getEmail()) && employee.getFname()!=null) {
+                employeeRepository.save(employee);
+                return new ResponseEntity<>(employee, HttpStatus.CREATED);
+            }
+            else {
+                throw new IllegalArgumentException("Invalid email format or error");
+            }
         } catch (Exception e) {
             System.out.println("Error in adding a employee");
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
@@ -69,5 +76,22 @@ public class EmployeeService {
             System.out.println("employee cant be updated");
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
+    }
+
+
+    // email verification
+
+    private boolean isValidEmail(String email) {
+        // Define a regular expression for a basic email format
+        String emailRegex = "^[a-zA-Z0-9_+&*-]+(?:\\.[a-zA-Z0-9_+&*-]+)*@(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,7}$";
+
+        // Compile the regex
+        Pattern pattern = Pattern.compile(emailRegex);
+
+        // Create a matcher object
+        Matcher matcher = pattern.matcher(email);
+
+        // Return whether the email matches the pattern
+        return matcher.matches();
     }
 }
