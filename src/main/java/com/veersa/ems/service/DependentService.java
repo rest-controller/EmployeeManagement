@@ -1,6 +1,7 @@
 package com.veersa.ems.service;
 
 import com.veersa.ems.model.Dependent;
+import com.veersa.ems.model.Location;
 import com.veersa.ems.repository.DependentRepository;
 import com.veersa.ems.repository.DependentRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,14 +19,14 @@ public class DependentService {
     DependentRepository dependentRepository;
 
     public List<Dependent> getDependents() {
-        return dependentRepository.findAll();
+        return dependentRepository.findAllByIsDeleted(0);
     }
 
     public ResponseEntity<Dependent> getDependent(int did) {
         try {
             System.out.println(did);
-            if (dependentRepository.existsDependentByDid(did)) {
-                Dependent dependent = dependentRepository.findByDid(did);
+            if (dependentRepository.existsDependentByDidAndIsDeleted(did,0)) {
+                Dependent dependent = dependentRepository.findByDidAndIsDeleted(did,0);
                 return new ResponseEntity<>(dependent, HttpStatus.FOUND);
             } else {
                 System.out.println("No Dependent fetched");
@@ -72,4 +73,21 @@ public class DependentService {
         }
     }
 
+    public ResponseEntity<Dependent> deleteDependent(Dependent dependent) {
+        try
+        {
+            Dependent dependent1 = dependentRepository.findByDid(dependent.getDid());
+            dependent1.setIsDeleted(1);
+            dependentRepository.save(dependent1);
+
+
+
+            return new ResponseEntity<>(dependent1,HttpStatus.ACCEPTED);
+        }catch (Exception e)
+        {
+            e.printStackTrace();
+            System.out.println("Location cant be deleted");
+            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
 }

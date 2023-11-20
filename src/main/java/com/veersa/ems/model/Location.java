@@ -19,9 +19,14 @@ public class Location implements Serializable {
     @Column(name = "location_id")
     int lid;
 
+    @Column(name="isDeleted", columnDefinition = "int default 0")
+    int isDeleted;
+
     @Column(name = "city")
     String city;
 
     @Column(name = "state")
     String state;
+
+
 }

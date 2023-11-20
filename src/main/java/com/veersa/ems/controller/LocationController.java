@@ -125,4 +125,28 @@ public class LocationController {
 
 
 
+
+    @Operation(summary = "Deleted Location", description = "Delete Location", tags = "Location API")
+    @ApiResponses(value =
+            {
+                    @ApiResponse(responseCode = "200",description = "Deleted Successfully",
+                            content = {@Content(mediaType = "application/json",
+                                    schema = @Schema(implementation = Location.class)
+                            )}
+                    ),
+
+                    @ApiResponse(responseCode = "404", description = "Deleted",
+                            content = @Content)
+            }
+    )
+    @PutMapping("delete-locations")
+    public ResponseEntity<Location> deleteLocation(@RequestBody Location location)
+    {
+        return locationService.deleteLocation(location);
+    }
+
+
+
+
+
 }
