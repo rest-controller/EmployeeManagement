@@ -8,6 +8,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -79,9 +80,9 @@ public class LocationController {
             }
     )
     @PostMapping("add-location")
-    public ResponseEntity<Location> addLocation(@RequestBody Location location)
+    public ResponseEntity<Location> addLocation(@RequestBody Location location, @Value("${all.prefix:}") String prefix)
     {
-        return locationService.addLocation(location);
+        return locationService.addLocation(location,prefix);
     }
 
     @Operation(summary = "Add many Locations", description = "Add many locations in the form of a List", tags = "Location API")
@@ -98,9 +99,9 @@ public class LocationController {
             }
     )
     @PostMapping("add-locations")
-    public ResponseEntity<List<Location>> addLocations(@RequestBody List<Location> locations)
+    public ResponseEntity<List<Location>> addLocations(@RequestBody List<Location> locations,@Value("${all.prefix:}") String prefix)
     {
-        return locationService.addLocations(locations);
+        return locationService.addLocations(locations,prefix);
     }
 
     //Update services:
@@ -118,9 +119,9 @@ public class LocationController {
             }
     )
     @PutMapping("update-locations")
-    public ResponseEntity<List<Location>> updateLocations(@RequestBody Location location)
+    public ResponseEntity<List<Location>> updateLocations(@RequestBody Location location,@Value("${all.prefix:}") String prefix)
     {
-        return locationService.updateLocations(location);
+        return locationService.updateLocations(location,prefix);
     }
 
 

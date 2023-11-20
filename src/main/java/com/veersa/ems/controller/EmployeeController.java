@@ -9,6 +9,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -76,9 +77,9 @@ public class EmployeeController {
             }
     )
     @PostMapping("add-employee")
-    public ResponseEntity<Employee> addEmployee(@RequestBody Employee employee)
+    public ResponseEntity<Employee> addEmployee(@RequestBody Employee employee,@Value("${all.prefix:}") String prefix)
     {
-        return employeeService.addEmployee(employee);
+        return employeeService.addEmployee(employee,prefix);
     }
 
     @Operation(summary = "Add Employees", description = "Add a List of Employees", tags = "Employee API")
@@ -95,10 +96,10 @@ public class EmployeeController {
             }
     )
     @PostMapping("add-employees")
-    public ResponseEntity<List<Employee>> addEmployees(@RequestBody List<Employee> employees)
+    public ResponseEntity<List<Employee>> addEmployees(@RequestBody List<Employee> employees,@Value("${all.prefix:}") String prefix)
     {
         EmployeeController locationService;
-        return employeeService.addEmployees(employees);
+        return employeeService.addEmployees(employees,prefix);
     }
 
     //Update services:
@@ -116,9 +117,9 @@ public class EmployeeController {
             }
     )
     @PutMapping("update-employee")
-    public ResponseEntity<Employee> updateEmployee(@RequestBody Employee employee)
+    public ResponseEntity<Employee> updateEmployee(@RequestBody Employee employee,@Value("${all.prefix:}") String prefix)
     {
-        return employeeService.updateEmployee(employee);
+        return employeeService.updateEmployee(employee,prefix);
     }
 
 
