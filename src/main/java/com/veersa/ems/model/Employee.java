@@ -31,8 +31,13 @@ public class Employee implements Serializable {
     @Column(name = "hire_date")
     String hdate;
 
+    @Column(name = "isDeletedEmployee",columnDefinition = "int default 0")
+    int isDeletedEmployee;
+
     @ManyToOne
     @JoinColumn(name = "location_id")
     private Location location;
+
+
 
 }

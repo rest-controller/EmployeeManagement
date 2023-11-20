@@ -22,6 +22,7 @@ public class EmployeeController {
     @Autowired
     EmployeeService employeeService;
 
+
     // Get services:
     @Operation(summary = "Get all Employees", description = "Get a List of Employees", tags = "Employee API")
     @ApiResponses(value =
@@ -118,5 +119,25 @@ public class EmployeeController {
     public ResponseEntity<Employee> updateEmployee(@RequestBody Employee employee)
     {
         return employeeService.updateEmployee(employee);
+    }
+
+
+    @Operation(summary = "Delete Employee", description = "Delete the employee details", tags = "Employee API")
+    @ApiResponses(value =
+            {
+                    @ApiResponse(responseCode = "200",description = "Deleted Successfully",
+                            content = {@Content(mediaType = "application/json",
+                                    schema = @Schema(implementation = Location.class)
+                            )}
+                    ),
+
+                    @ApiResponse(responseCode = "404", description = "Not Deleted",
+                            content = @Content)
+            }
+    )
+    @PutMapping("delete-employee")
+    public ResponseEntity<Employee> deleteEmployee(@RequestBody Employee employee)
+    {
+        return employeeService.deleteEmployee(employee);
     }
 }

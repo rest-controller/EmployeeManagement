@@ -117,4 +117,23 @@ public class DependentController {
         return dependentService.updateDependent(dependent);
     }
 
+    @Operation(summary = "Delete Dependent", description = "Delete a dependent", tags = "Dependant API")
+    @ApiResponses(value =
+            {
+                    @ApiResponse(responseCode = "200",description = "Deleted Successfully",
+                            content = {@Content(mediaType = "application/json",
+                                    schema = @Schema(implementation = Location.class)
+                            )}
+                    ),
+
+                    @ApiResponse(responseCode = "404", description = "Not deleted",
+                            content = @Content)
+            }
+    )
+    @PutMapping("delete-dependent")
+    public ResponseEntity<Dependent> deleteDependent(@RequestBody Dependent dependent)
+    {
+        return dependentService.deleteDependent(dependent);
+    }
+
 }

@@ -1,12 +1,19 @@
 package com.veersa.ems.service;
 
+import com.veersa.ems.model.Employee;
 import com.veersa.ems.model.Location;
 import com.veersa.ems.repository.LocationRepository;
+import jakarta.persistence.EntityManagerFactory;
+import jakarta.transaction.Transactional;
+
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -16,13 +23,38 @@ public class LocationService {
     @Autowired
     LocationRepository locationRepository;
 
-    public List<Location> getLocations() {
-        return locationRepository.findAll();
+    private final EntityManagerFactory entityManagerFactory;
+
+    @Autowired
+    public LocationService(EntityManagerFactory entityManagerFactory)
+    {
+        this.entityManagerFactory = entityManagerFactory;
     }
+
+
+
+
+    @Transactional
+    public List<Location> getLocations() {
+        try(Session session = entityManagerFactory.unwrap(SessionFactory.class).openSession())
+        {
+            String hql = "From Location where isDeleted = 0";
+            List<Location> locations = session.createQuery(hql,Location.class).list();
+            return locations;
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+
+
 
     public ResponseEntity<Location> addLocation(Location location) {
 
         try {
+            location.setIsDeleted(0);
             locationRepository.save(location);
             return new ResponseEntity<>(location, HttpStatus.CREATED);
         } catch (Exception e) {
@@ -32,10 +64,12 @@ public class LocationService {
     }
 
     public ResponseEntity<List<Location>> getLocation(String city) {
-        try {
+        try(Session session = entityManagerFactory.unwrap(SessionFactory.class).openSession()) {
             System.out.println(city);
-            if (locationRepository.existsLocationByCity(city)) {
-                List<Location> locations = locationRepository.findAllByCity(city);
+            if (locationRepository.existsLocationByCityAndIsDeleted(city,0)) {
+
+                String hql = "From Location where city = :city and isDeleted = 0";
+                List<Location> locations = session.createQuery(hql, Location.class).setParameter("city",city).list();
                 return new ResponseEntity<>(locations, HttpStatus.FOUND);
             } else {
                 System.out.println("No product fetched");
@@ -76,6 +110,22 @@ public class LocationService {
         }
     }
 
+
+    public ResponseEntity<Location> deleteLocation(Location location) {
+        try
+        {
+            Location location1 = locationRepository.findByCity(location.getCity());
+            location1.setIsDeleted(1);
+            locationRepository.save(location1);
+            return new ResponseEntity<>(location,HttpStatus.ACCEPTED);
+        }catch (Exception e)
+        {
+            e.printStackTrace();
+            System.out.println("Location cant be deleted");
+            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
+    }
 
 
 

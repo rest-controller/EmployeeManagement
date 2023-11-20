@@ -32,6 +32,8 @@ public class Dependent implements Serializable {
     @Column(name = "relationship")
     String relationship;
 
+    @Column(name="isDeleted", columnDefinition = "int default 0")
+    int isDeleted;
 
 
 }

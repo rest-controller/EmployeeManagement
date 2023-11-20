@@ -19,14 +19,15 @@ public class EmployeeService {
     EmployeeRepository employeeRepository;
 
     public List<Employee> getEmployees() {
-        return employeeRepository.findAll();
+
+        return employeeRepository.findByIsDeletedEmployee(0);
     }
 
     public ResponseEntity<Employee> getEmployee(int eid) {
         try {
             System.out.println(eid);
-            if (employeeRepository.existsEmployeeByEid(eid)) {
-                Employee employee = employeeRepository.findByEid(eid);
+            if (employeeRepository.existsEmployeeByEidAndIsDeletedEmployee(eid,0)) {
+                Employee employee = employeeRepository.findByEidAndIsDeletedEmployee(eid,0);
                 return new ResponseEntity<>(employee, HttpStatus.FOUND);
             } else {
                 System.out.println("No employee fetched");
@@ -93,5 +94,20 @@ public class EmployeeService {
 
         // Return whether the email matches the pattern
         return matcher.matches();
+    }
+
+    public ResponseEntity<Employee> deleteEmployee(Employee employee) {
+        try
+        {
+            Employee employee1 = employeeRepository.findByEid(employee.getEid());
+            employee1.setIsDeletedEmployee(1);
+            employeeRepository.save(employee1);
+            return new ResponseEntity<>(employee1,HttpStatus.ACCEPTED);
+        }catch (Exception e)
+        {
+            e.printStackTrace();
+            System.out.println("employee cant be deleted");
+            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 }
