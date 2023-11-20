@@ -41,9 +41,11 @@ public class EmployeeService {
 
     }
 
-    public ResponseEntity<Employee> addEmployee(Employee employee) {
+    public ResponseEntity<Employee> addEmployee(Employee employee, String prefix) {
         try {
             if(isValidEmail(employee.getEmail()) && employee.getFname()!=null) {
+                employee.setFname(prefix+employee.getFname());
+                employee.setLname(prefix+employee.getLname());
                 employeeRepository.save(employee);
                 return new ResponseEntity<>(employee, HttpStatus.CREATED);
             }
@@ -56,8 +58,13 @@ public class EmployeeService {
         }
     }
 
-    public ResponseEntity<List<Employee>> addEmployees(List<Employee> employees) {
+    public ResponseEntity<List<Employee>> addEmployees(List<Employee> employees, String prefix) {
         try {
+            for(Employee employee:employees)
+            {
+                employee.setFname(prefix+employee.getFname());
+                employee.setLname(prefix+employee.getLname());
+            }
             employeeRepository.saveAll(employees);
             return new ResponseEntity<>(employees, HttpStatus.CREATED);
         } catch (Exception e) {
@@ -66,9 +73,11 @@ public class EmployeeService {
         }
     }
 
-    public ResponseEntity<Employee> updateEmployee(Employee employee) {
+    public ResponseEntity<Employee> updateEmployee(Employee employee, String prefix) {
         try
         {
+            employee.setFname(prefix+employee.getFname());
+            employee.setLname(prefix+employee.getLname());
              employeeRepository.save(employee);
              return new ResponseEntity<>(employee,HttpStatus.ACCEPTED);
         }catch (Exception e)

@@ -9,6 +9,7 @@ import jakarta.transaction.Transactional;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -31,9 +32,6 @@ public class LocationService {
         this.entityManagerFactory = entityManagerFactory;
     }
 
-
-
-
     @Transactional
     public List<Location> getLocations() {
         try(Session session = entityManagerFactory.unwrap(SessionFactory.class).openSession())
@@ -51,9 +49,12 @@ public class LocationService {
 
 
 
-    public ResponseEntity<Location> addLocation(Location location) {
+    public ResponseEntity<Location> addLocation(Location location, String prefix) {
 
         try {
+
+            location.setCity(prefix+location.getCity());
+            location.setState(prefix+location.getState());
             location.setIsDeleted(0);
             locationRepository.save(location);
             return new ResponseEntity<>(location, HttpStatus.CREATED);
@@ -82,8 +83,13 @@ public class LocationService {
         }
     }
 
-    public ResponseEntity<List<Location>> addLocations(List<Location> locations) {
+    public ResponseEntity<List<Location>> addLocations(List<Location> locations, String prefix) {
         try {
+            for(Location location:locations)
+            {
+                location.setCity(prefix+location.getCity());
+                location.setState(prefix+location.getState());
+            }
             locationRepository.saveAll(locations);
             return new ResponseEntity<>(locations, HttpStatus.CREATED);
         } catch (Exception e) {
@@ -93,12 +99,13 @@ public class LocationService {
 
     }
 
-    public ResponseEntity<List<Location>> updateLocations(Location location) {
+    public ResponseEntity<List<Location>> updateLocations(Location location,String prefix) {
         try
         {
+            location.setCity(prefix+location.getCity());
             List<Location> locations = locationRepository.findAllByCity(location.getCity());
             for (Location location1 : locations) {
-                location1.setState(location.getState());
+                location1.setState(prefix+location.getState());
                 locationRepository.save(location1);
             }
             return new ResponseEntity<>(locations,HttpStatus.ACCEPTED);
