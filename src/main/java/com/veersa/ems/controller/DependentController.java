@@ -1,5 +1,6 @@
 package com.veersa.ems.controller;
 
+import com.veersa.ems.EmployeeManagementApplication;
 import com.veersa.ems.model.Dependent;
 import com.veersa.ems.model.Location;
 import com.veersa.ems.service.DependentService;
@@ -8,6 +9,8 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -18,6 +21,9 @@ import java.util.List;
 public class DependentController {
     @Autowired
     DependentService dependentService;
+
+    private  static final Logger log = LoggerFactory.getLogger(EmployeeManagementApplication.class);
+
 
     // Get services:
 
@@ -37,6 +43,7 @@ public class DependentController {
     @GetMapping("get-dependents")
     public List<Dependent> getDependents()
     {
+        log.info("[Successfull info] [DependentContoller] [getDependents] [trying to get the dependents]");
         return dependentService.getDependents();
     }
 
