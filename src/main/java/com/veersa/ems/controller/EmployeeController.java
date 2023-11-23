@@ -8,6 +8,7 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
@@ -17,6 +18,7 @@ import java.net.http.HttpResponse;
 import java.util.List;
 
 @RestController
+@Slf4j
 @RequestMapping("/employees")
 public class EmployeeController {
 
@@ -39,8 +41,9 @@ public class EmployeeController {
             }
     )
     @GetMapping("get-employees")
-    public List<Employee> getLocations()
+    public List<Employee> getEmployees()
     {
+        log.info("[EmployeeController] [getEmployees [trying to get all the locations]");
         return employeeService.getEmployees();
     }
 
@@ -60,6 +63,7 @@ public class EmployeeController {
     @GetMapping("get-employee")
     public ResponseEntity<Employee> getLocation(@RequestBody Employee employee)
     {
+        log.info("[EmployeeController] [getEmployee] [trying to get a single employee]");
         return employeeService.getEmployee(employee.getEid());
     }
 
@@ -79,6 +83,7 @@ public class EmployeeController {
     @PostMapping("add-employee")
     public ResponseEntity<Employee> addEmployee(@RequestBody Employee employee,@Value("${all.prefix:}") String prefix)
     {
+        log.info("[EmployeeController] [addEmployee] [trying to add a single employee]");
         return employeeService.addEmployee(employee,prefix);
     }
 
@@ -98,6 +103,7 @@ public class EmployeeController {
     @PostMapping("add-employees")
     public ResponseEntity<List<Employee>> addEmployees(@RequestBody List<Employee> employees,@Value("${all.prefix:}") String prefix)
     {
+        log.info("[EmployeeController] [addEmployees] [trying to add multiple employees]");
         EmployeeController locationService;
         return employeeService.addEmployees(employees,prefix);
     }
@@ -119,6 +125,7 @@ public class EmployeeController {
     @PutMapping("update-employee")
     public ResponseEntity<Employee> updateEmployee(@RequestBody Employee employee,@Value("${all.prefix:}") String prefix)
     {
+        log.info("[EmployeeController] [updateEmployee] [trying to update all the employees]");
         return employeeService.updateEmployee(employee,prefix);
     }
 
@@ -139,6 +146,7 @@ public class EmployeeController {
     @PutMapping("delete-employee")
     public ResponseEntity<Employee> deleteEmployee(@RequestBody Employee employee)
     {
+        log.info("[EmployeeController] [deleteEmployee] [trying to delete a single employee]");
         return employeeService.deleteEmployee(employee);
     }
 }
