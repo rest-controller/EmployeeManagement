@@ -20,6 +20,7 @@ public class EmployeeService {
     @Autowired
     EmployeeRepository employeeRepository;
 
+
     public List<Employee> getEmployees() {
 
         return employeeRepository.findByIsDeletedEmployee(0);
